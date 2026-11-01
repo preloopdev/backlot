@@ -29,11 +29,11 @@ env:
 jobs:
   # The registry is the list, so adding a source does not also mean editing this file.
   sources:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     outputs:
       names: ${{ steps.pick.outputs.names }}
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: useblacksmith/checkout@v1 # v7.0.1
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.13"
@@ -58,7 +58,7 @@ jobs:
 
   compare:
     needs: sources
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     # Two runs of one source would both find no open issue of its own and both open one.
     concurrency:
       group: fidelity-${{ matrix.source }}
@@ -68,7 +68,7 @@ jobs:
       matrix:
         source: ${{ fromJSON(needs.sources.outputs.names) }}
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: useblacksmith/checkout@v1 # v7.0.1
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.13"
