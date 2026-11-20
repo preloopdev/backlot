@@ -310,7 +310,9 @@ def test_ci_requires_docker_for_the_atlassian_test_on_linux_alone():
     test = ci["jobs"]["test"]
     from_matrix = re.fullmatch(r"\$\{\{ *matrix\.([\w-]+) *\}\}", test["runs-on"])
     images = test["strategy"]["matrix"][from_matrix[1]] if from_matrix else [test["runs-on"]]
-    assert all(image.startswith("ubuntu-") for image in images), images
+    # GitHub-hosted images are `ubuntu-*`; Blacksmith's are `<size>-ubuntu-*`, and both run
+    # Docker's Linux containers.
+    assert all("ubuntu-" in image for image in images), images
     names = [s.get("name") for s in test["steps"]]
     assert names.index("Wait for the Docker daemon") < names.index("Unit tests")
     assert test["steps"][names.index("Unit tests")]["env"]["BACKLOT_TEST_REQUIRE_DOCKER"] == "1"
